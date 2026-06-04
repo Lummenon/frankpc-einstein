@@ -1,0 +1,9 @@
+# Credenciales reales — NUNCA subir al repositorio
+config/db.php
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs y caché
+*.log

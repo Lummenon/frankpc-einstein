@@ -1,0 +1,921 @@
+/* ================================================================
+   FRANK PC EINSTEIN — style.css
+   Tema: Plano Técnico / Blueprint Engineering
+   Paleta: --navy (#2c3e50)  +  --orange (#e67e22)  sobre fondo hueso
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Orbitron:wght@700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* ── Variables ──────────────────────────────────────────────── */
+:root {
+  --navy:        #2c3e50;
+  --navy-60:     rgba(44,62,80,0.60);
+  --navy-30:     rgba(44,62,80,0.30);
+  --navy-10:     rgba(44,62,80,0.10);
+  --navy-04:     rgba(44,62,80,0.04);
+  --orange:      #e67e22;
+  --orange-10:   rgba(230,126,34,0.10);
+  --orange-30:   rgba(230,126,34,0.30);
+  --bg:          #f4f5f7;
+  --white:       #ffffff;
+  --ok:          #27ae60;
+  --err:         #c0392b;
+  --belt-w:      540px;
+  --font-title:  'Orbitron', monospace;
+  --font-body:   'Rajdhani', sans-serif;
+  --shadow-soft: 0 1px 4px rgba(44,62,80,0.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ── Base: fondo con cuadrícula milimetrada ─────────────────── */
+body {
+  background-color: var(--bg);
+  /* Grid milimetrado: líneas finas + líneas maestras cada 100px */
+  background-image:
+    linear-gradient(var(--navy-10) 1px, transparent 1px),
+    linear-gradient(90deg, var(--navy-10) 1px, transparent 1px),
+    linear-gradient(rgba(44,62,80,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44,62,80,0.05) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  /* Clave del parallax: el grid queda fijo en el viewport mientras
+     el contenido se desliza encima — efecto de profundidad puro CSS */
+  background-attachment: fixed;
+  color: var(--navy);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* ================================================================
+   CAPA 1 — FÁBRICA (canvas fijo, fondo transparente, parallax 0.3×)
+   ================================================================ */
+#factory-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  /* Sin fondo: el CSS grid del body se ve a través */
+}
+
+/* ================================================================
+   CABECERA
+   ================================================================ */
+#main-header {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  z-index: 30;
+  background: rgba(244,245,247,0.96);
+  border-bottom: 1px solid var(--navy-10);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: opacity 0.25s;
+}
+
+#main-header h1 {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  letter-spacing: 5px;
+  color: var(--navy);
+  /* Subrayado naranja como acento técnico */
+  border-bottom: 2px solid var(--orange);
+  padding-bottom: 3px;
+  line-height: 1;
+}
+
+/* Botón mini de reinicio en la cabecera */
+.btn-nuevo-mini {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-title);
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--navy-30);
+  color: var(--navy-60);
+  cursor: pointer;
+  transition: 0.2s;
+  text-transform: uppercase;
+}
+.btn-nuevo-mini:hover {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+/* ================================================================
+   CAPA 3 — VISOR PC (fijo, derecha) — aspecto plano AutoCAD
+   ================================================================ */
+#pc-viewer {
+  position: fixed;
+  top: 50%; right: 22px;
+  transform: translateY(-50%);
+  width: 260px;
+  z-index: 20;
+  pointer-events: none;
+  user-select: none;
+  background: rgba(244,245,247,0.92);
+  border: 1px solid var(--navy-30);
+  padding: 12px;
+}
+
+/* Marca de plano en la esquina superior derecha */
+#pc-viewer::after {
+  content: 'PLANO REV.A';
+  position: absolute;
+  bottom: 8px; right: 8px;
+  font-family: var(--font-title);
+  font-size: 0.42rem;
+  letter-spacing: 1.5px;
+  color: var(--navy-30);
+}
+
+#pc-viewer-title {
+  font-family: var(--font-title);
+  font-size: 0.52rem;
+  letter-spacing: 3px;
+  color: var(--navy-60);
+  text-align: center;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--navy-10);
+  padding-bottom: 6px;
+}
+
+#pc-svg { width: 100%; }
+
+/* ── Override de colores del SVG → paleta blueprint ─────────── */
+
+/* Estado base: todo en navy al 20-40% */
+#pc-svg *                    { stroke: rgba(44,62,80,0.18); fill: none; }
+#pc-svg rect:not([class])    { fill: rgba(44,62,80,0.06); stroke: rgba(44,62,80,0.14); }
+#pc-svg circle:not([class])  { fill: none; stroke: rgba(44,62,80,0.14); }
+#pc-svg line                 { stroke: rgba(44,62,80,0.12); }
+
+.svg-comp .comp-fill   { fill:   rgba(44,62,80,0.04) !important; }
+.svg-comp .comp-stroke { stroke: rgba(44,62,80,0.38) !important; fill: none !important; }
+.svg-comp .comp-label  {
+  fill: rgba(44,62,80,0.50) !important;
+  stroke: none !important;
+  font-family: var(--font-title);
+  font-size: 7px;
+}
+
+/* Transiciones */
+.svg-comp .comp-fill,
+.svg-comp .comp-stroke,
+.svg-comp .comp-label { transition: all 0.4s ease; }
+
+/* SVG clickable: pointer-events:all sobreescribe el none del #pc-viewer */
+.svg-comp {
+  pointer-events: all;
+  cursor: pointer;
+}
+/* Hover sutil: el contorno se intensifica ligeramente */
+.svg-comp:not(.active):not(.done):hover .comp-stroke { opacity: 0.55 !important; }
+.svg-comp:not(.active):not(.done):hover .comp-label  { opacity: 0.55 !important; }
+
+/* Estado ACTIVO: acento naranja + latido suave */
+.svg-comp.active .comp-fill   { fill:   var(--orange-10)  !important; }
+.svg-comp.active .comp-stroke { stroke: var(--orange)     !important; stroke-width: 2 !important; }
+.svg-comp.active .comp-label  { fill:   var(--orange)     !important; }
+.svg-comp.active { animation: blueprint-pulse 2.2s ease-in-out infinite; }
+
+@keyframes blueprint-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+/* Estado DONE: navy sólido (confirmado) */
+.svg-comp.done .comp-fill   { fill:   rgba(44,62,80,0.08) !important; }
+.svg-comp.done .comp-stroke { stroke: var(--navy) !important; stroke-width: 1.8 !important; }
+.svg-comp.done .comp-label  { fill:   var(--navy) !important; opacity: 0.85; }
+.svg-comp.done { animation: none; }
+
+/* ================================================================
+   CAPA 2 — CINTA TRANSPORTADORA VERTICAL (belt-column)
+   ================================================================ */
+#page-wrap {
+  position: relative;
+  z-index: 5;
+  padding-top: 56px;     /* altura de la cabecera */
+  padding-right: 308px;  /* espacio para el pc-viewer */
+  padding-left: 88px;    /* espacio para el stepper de progreso */
+  padding-bottom: 100px;
+}
+
+/* Columna cinta: centrada en el espacio disponible */
+#belt-column {
+  position: relative;
+  width: var(--belt-w);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Raíles laterales de la cinta */
+#belt-column::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-left:  2px solid var(--navy-30);
+  border-right: 2px solid var(--navy-30);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Textura de listones (se mueven hacia arriba simulando movimiento) */
+#belt-column::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent           0px,
+    transparent           48px,
+    rgba(44,62,80,0.035)  48px,
+    rgba(44,62,80,0.035)  52px
+  );
+  animation: belt-upward 1.4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes belt-upward {
+  from { background-position: 0 0; }
+  to   { background-position: 0 -52px; }
+}
+
+/* ── Sección Hero ───────────────────────────────────────────── */
+.hero-section {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 50px;
+  gap: 18px;
+  background: rgba(255,255,255,0.91); /* fondo consistente con comp-section */
+}
+
+.hero-section h2 {
+  font-family: var(--font-title);
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  color: var(--navy);
+  line-height: 1.15;
+  border-left: 4px solid var(--orange);
+  padding-left: 16px;
+}
+
+.hero-section p {
+  font-size: 1.08rem;
+  color: var(--navy-60);
+  max-width: 420px;
+  line-height: 1.75;
+  padding-left: 20px;
+}
+
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 24px;
+  padding-left: 20px;
+  color: var(--navy-30);
+  font-family: var(--font-title);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  animation: hint-bounce 2.4s ease-in-out infinite;
+}
+@keyframes hint-bounce {
+  0%, 100% { opacity: 0.4; transform: translateY(0); }
+  55%       { opacity: 0.9; transform: translateY(8px); }
+}
+
+/* ── Conector entre paquetes (rodillo de cinta) ─────────────── */
+.belt-connector {
+  position: relative;
+  z-index: 2;
+  height: 210px; /* espacio generoso para apreciar la cinta entre tarjetas */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+/* Rodillos laterales */
+.belt-connector::before,
+.belt-connector::after {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--navy-30);
+}
+.belt-connector::before { left: -10px; }
+.belt-connector::after  { right: -10px; }
+
+.belt-connector-line {
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--navy-30) 0px, var(--navy-30) 6px,
+    transparent 6px, transparent 12px
+  );
+}
+.belt-connector-label {
+  font-family: var(--font-title);
+  font-size: 0.52rem;
+  letter-spacing: 2px;
+  color: var(--navy-30);
+  white-space: nowrap;
+}
+
+/* ── Tarjeta / Paquete de componente — estilo dibujo técnico ─── */
+/*
+ * --cc (corner color): variable CSS local que controla el color de las
+ * marcas de registro (L-brackets) en las 4 esquinas. Se define aquí como
+ * navy y se sobreescribe con una sola línea en los estados active/done.
+ * Esto evita repetir los 8 linear-gradient 3 veces (ahorro de ~48 líneas).
+ */
+.comp-section {
+  --cc: var(--navy-30); /* color de las marcas de esquina */
+  position: relative;
+  z-index: 2;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px 50px 42px;
+  background-color: rgba(255,255,255,0.91);
+  /* 8 gradientes de 1.5px forman los L-brackets de las 4 esquinas */
+  background-image:
+    linear-gradient(var(--cc),var(--cc)) 0    0   /1.5px 20px,
+    linear-gradient(var(--cc),var(--cc)) 0    0   /20px 1.5px,
+    linear-gradient(var(--cc),var(--cc)) 100% 0   /1.5px 20px,
+    linear-gradient(var(--cc),var(--cc)) 100% 0   /20px 1.5px,
+    linear-gradient(var(--cc),var(--cc)) 0    100%/1.5px 20px,
+    linear-gradient(var(--cc),var(--cc)) 0    100%/20px 1.5px,
+    linear-gradient(var(--cc),var(--cc)) 100% 100%/1.5px 20px,
+    linear-gradient(var(--cc),var(--cc)) 100% 100%/20px 1.5px;
+  background-repeat: no-repeat;
+  border-top: 1px solid var(--navy-10);
+  border-bottom: 1px solid var(--navy-10);
+  border-left: 4px solid var(--navy-30);
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+/* Marco exterior punteado (hoja de plano técnico) */
+.comp-section::before {
+  content: '';
+  position: absolute;
+  inset: -8px -6px;
+  border: 1px dashed rgba(44,62,80,0.20);
+  pointer-events: none;
+  z-index: 0;
+  transition: border-color 0.4s;
+}
+
+/* Número de referencia de la pieza (esquina superior derecha) */
+.comp-section::after {
+  content: attr(data-step);
+  position: absolute;
+  top: 10px; right: 14px;
+  font-family: var(--font-title);
+  font-size: 0.50rem;
+  letter-spacing: 2px;
+  color: var(--navy-30);
+  border: 1px solid var(--navy-10);
+  padding: 2px 9px;
+  background: rgba(244,245,247,0.85);
+  pointer-events: none;
+  z-index: 3;
+  transition: color 0.4s, border-color 0.4s;
+}
+
+/* Línea separadora bajo el título */
+.comp-section h2 {
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+  color: var(--navy);
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  line-height: 1.1;
+  border-bottom: 1px solid var(--navy-10);
+  transition: color 0.4s;
+}
+.comp-section p { padding-top: 14px; }
+
+.comp-section.visible { opacity: 1; transform: translateX(0); }
+
+/* Estado ACTIVO: solo cambia --cc, el resto se hereda */
+.comp-section.section-active {
+  --cc: var(--orange);
+  border-left-color: var(--orange);
+  background-color: rgba(255,255,255,0.93);
+}
+.comp-section.section-active::before        { border-color: var(--orange-30); }
+.comp-section.section-active::after         { color: var(--orange); border-color: var(--orange-30); }
+.comp-section.section-active .comp-icon-big { color: var(--orange); }
+.comp-section.section-active h2             { color: var(--orange); border-bottom-color: var(--orange-30); }
+
+/* Estado COMPLETADO: solo cambia --cc */
+.comp-section.section-done { --cc: var(--ok); border-left-color: var(--ok); }
+.comp-section.section-done::before { border-color: rgba(39,174,96,0.25); }
+.comp-section.section-done::after  { color: var(--ok); border-color: rgba(39,174,96,0.25); }
+
+/* Icono grande */
+.comp-icon-big {
+  font-size: 2.5rem;
+  color: var(--navy-60);
+  margin-bottom: 14px;
+  transition: color 0.4s;
+}
+
+/* Descripción */
+.comp-section p {
+  font-size: 0.97rem;
+  color: var(--navy-60);
+  max-width: 400px;
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+
+/* Estado de selección */
+.comp-selection-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-title);
+  font-size: 0.68rem;
+  padding: 8px 14px;
+  border-left: 3px solid var(--navy-30);
+  background: rgba(244,245,247,0.9);
+  color: var(--navy-30);
+  margin-bottom: 16px;
+  max-width: 400px;
+  transition: 0.35s;
+  letter-spacing: 1px;
+}
+.comp-selection-status.selected {
+  color: var(--ok);
+  border-color: var(--ok);
+  background: rgba(39,174,96,0.06);
+}
+
+/* ── Botón ELEGIR / MODIFICAR ───────────────────────────────── */
+.btn-select {
+  background: var(--white);
+  border: 2px solid var(--navy);
+  color: var(--navy);
+  padding: 10px 28px;
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: 0.25s;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.btn-select:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+/* Estado modificado (re-selección disponible) */
+.btn-select.btn-modified {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.btn-select.btn-modified:hover {
+  background: var(--orange);
+  color: var(--white);
+}
+
+/* ── Sección Final ──────────────────────────────────────────── */
+.final-section {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 50px;
+  gap: 24px;
+  background: rgba(255,255,255,0.91);
+}
+.final-section h2 {
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+  color: var(--navy);
+  border-left: 4px solid var(--orange);
+  padding-left: 14px;
+}
+
+/* Resumen de configuración */
+.config-preview {
+  background: var(--white);
+  border: 1px solid var(--navy-10);
+  width: 100%;
+  max-width: 440px;
+}
+.config-preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--navy-10);
+  font-size: 0.88rem;
+}
+.config-preview-row:last-child { border-bottom: none; }
+.config-preview-row .lbl {
+  color: var(--navy-30);
+  font-family: var(--font-title);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.config-preview-row .val       { color: var(--navy); font-weight: 700; }
+.config-preview-row .val.pending { color: var(--navy-30); font-weight: normal; }
+
+/* ── Botón DIAGNOSTICAR ─────────────────────────────────────── */
+.btn-check {
+  background: var(--navy);
+  border: 2px solid var(--navy);
+  color: var(--white);
+  padding: 13px 44px;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.25s;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.btn-check:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+/* ── Botón ARMAR NUEVO PC (final) ───────────────────────────── */
+.btn-nuevo-pc {
+  background: var(--white);
+  border: 2px solid var(--navy-30);
+  color: var(--navy-60);
+  padding: 11px 30px;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: 0.25s;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.btn-nuevo-pc:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+/* ================================================================
+   MODALES
+   ================================================================ */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(244,245,247,0.90);
+  z-index: 1000;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 70px;
+  backdrop-filter: blur(3px);
+}
+
+.modal {
+  background: var(--white);
+  border: 1px solid var(--navy-30);
+  width: 660px;
+  max-width: 95vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(44,62,80,0.12);
+}
+
+/* Cabecera del modal: nombre + descripción del componente */
+.m-head {
+  padding: 18px 22px 14px;
+  border-bottom: 2px solid var(--orange);
+  background: var(--bg);
+}
+
+.modal-comp-title {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+  color: var(--navy);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.modal-comp-desc {
+  font-size: 0.88rem;
+  color: var(--navy-60);
+  line-height: 1.6;
+  border-top: 1px solid var(--navy-10);
+  padding-top: 8px;
+}
+
+.m-body { overflow-y: auto; padding: 18px 22px; }
+
+/* ── Grupos por Tier ────────────────────────────────────────── */
+.tier-group { margin-bottom: 18px; }
+
+.tier-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  background: var(--navy);
+  color: var(--white);
+}
+.tier-group-name {
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--orange);
+}
+.tier-group-count {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+}
+
+.tier-group-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 6px;
+  padding: 10px;
+  background: rgba(244,245,247,0.60);
+  border: 1px solid var(--navy-10);
+  border-top: none;
+}
+
+/* Tarjeta de opción */
+.opt-card {
+  padding: 9px 13px;
+  background: var(--white);
+  border: 1px solid var(--navy-10);
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.86rem;
+  color: var(--navy);
+  line-height: 1.35;
+}
+.opt-card:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: var(--orange-10);
+}
+/* Opción actualmente seleccionada */
+.opt-card.selected {
+  border-color: var(--ok);
+  background: rgba(39,174,96,0.07);
+  color: var(--ok);
+  font-weight: 700;
+}
+
+/* Botón cerrar modal */
+.modal-cancel-btn {
+  padding: 12px;
+  background: var(--bg);
+  border: none;
+  border-top: 1px solid var(--navy-10);
+  color: var(--navy-60);
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+.modal-cancel-btn:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
+/* ── Modal de resultados ────────────────────────────────────── */
+.summary-box {
+  background: var(--bg);
+  border: 1px solid var(--navy-10);
+  padding: 6px 18px;
+  margin-bottom: 22px;
+}
+.sum-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--navy-10);
+  font-size: 0.88rem;
+}
+.sum-item:last-child { border-bottom: none; }
+.sum-label {
+  color: var(--navy-30);
+  font-family: var(--font-title);
+  text-transform: uppercase;
+  width: 120px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+.sum-val { color: var(--navy); text-align: right; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+.res-row {
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--navy-10);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.res-row span:first-child { color: var(--navy-60); }
+
+.ok   { color: var(--ok);     font-family: var(--font-title); font-size: 0.82em; }
+.err  { color: var(--err);    font-family: var(--font-title); font-size: 0.82em; font-weight: 700; }
+.warn { color: var(--orange); font-family: var(--font-title); font-size: 0.82em; }
+
+/* ── Mensaje de diagnóstico (debajo de cada fila con error/warn) ── */
+.diag-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 18px 10px 28px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  border-left: 2px solid;
+  margin: -1px 0 4px;  /* se pega visualmente a la fila que lo originó */
+  transition: 0.2s;
+}
+.diag-msg i { margin-top: 2px; flex-shrink: 0; }
+.diag-msg-err  { border-color: var(--err);    color: var(--err);    background: rgba(192,57,43,0.05);  }
+.diag-msg-warn { border-color: var(--orange);  color: var(--orange); background: rgba(230,126,34,0.05); }
+
+/* ── Botón cerrar informe ───────────────────────────────────── */
+.btn-cerrar-informe {
+  margin: 16px;
+  padding: 12px;
+  background: var(--navy);
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+.btn-cerrar-informe:hover { background: var(--orange); }
+
+/* ================================================================
+   STEPPER DE PROGRESO (barra izquierda)
+   8 puntos conectados. Tooltip al hover. Sin texto fijo → no satura.
+   ================================================================ */
+#progress-nav {
+  position: fixed;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none; /* el click lo gestiona cada .progress-step */
+}
+
+/* Paso individual */
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: all;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Punto del paso */
+.step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--navy-30);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 0.52rem;
+  color: var(--navy-30);
+  transition: border-color 0.3s, background 0.3s, color 0.3s, transform 0.3s;
+}
+.progress-step:hover .step-dot {
+  border-color: var(--navy-60);
+  color: var(--navy);
+  transform: scale(1.12);
+}
+
+/* Línea vertical entre pasos */
+.progress-vline {
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--navy-30), var(--navy-10));
+}
+
+/* Tooltip flotante: aparece a la derecha del punto al hacer hover */
+.progress-step::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-family: var(--font-title);
+  font-size: 0.52rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: rgba(244,245,247,0.97);
+  padding: 4px 9px;
+  border: 1px solid var(--navy-10);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+  z-index: 50;
+}
+.progress-step:hover::after { opacity: 1; }
+
+/* Estado: activo (sección visible en pantalla) */
+.progress-step.nav-active .step-dot {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: var(--white);
+  transform: scale(1.18);
+}
+.progress-step.nav-active .progress-vline { display: none; } /* se aplica al siguiente, no a éste */
+
+/* Estado: completado (componente elegido) */
+.progress-step.nav-done .step-dot {
+  border-color: var(--ok);
+  background: rgba(39,174,96,0.10);
+  color: var(--ok);
+}
+.progress-step.nav-done .step-num  { display: none; }
+.progress-step.nav-done .step-check { display: block !important; }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+/* Viewport intermedio: reducir cintura de la cinta antes de que el
+   PC viewer empiece a competir por espacio */
+@media (max-width: 1280px) {
+  :root { --belt-w: 480px; }
+}
+
+/* Cuando ya no caben PC viewer + cinta cómodamente: ocultar PC viewer.
+   Umbral calculado: 540px cinta + 88px izq + 308px der = 936px → 1050px con margen */
+@media (max-width: 1100px) {
+  #pc-viewer  { display: none; }
+  #page-wrap  { padding-right: 30px; }
+  :root       { --belt-w: 540px; } /* puede recuperar su ancho completo */
+}
+
+/* Ocultar stepper cuando el espacio es más justo */
+@media (max-width: 950px) {
+  #progress-nav { display: none; }
+  #page-wrap    { padding-left: 30px; }
+}
+
+/* Móvil: layout de columna única */
+@media (max-width: 650px) {
+  :root { --belt-w: 100%; }
+  #page-wrap { padding-left: 12px; padding-right: 12px; }
+  .comp-section, .hero-section, .final-section { padding: 36px 18px; }
+  .belt-connector { height: 140px; }
+  .tier-group-body { grid-template-columns: 1fr; }
+}
